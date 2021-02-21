@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 // example of code is taken from Vladilen Minin
 
@@ -6,7 +6,7 @@ const localStorageName = 'react-game'
 
 export const useAuth = () => {
     const [token, setToken] = useState<string | null>(null)
-    const [userId, setUserId] = useState<string | null>(null)
+    const [userId, setUserId] = useState<string>('')
     const [ready, setReady] = useState<boolean>(false)
 
     const login = useCallback((userToken: string, id: string) => {
@@ -21,7 +21,7 @@ export const useAuth = () => {
 
     const logout = useCallback(() => {
         setToken(null)
-        setUserId(null)
+        setUserId('')
 
         localStorage.removeItem(localStorageName)
     }, [])
