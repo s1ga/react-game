@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink, useHistory } from 'react-router-dom'
+import { Backdrop } from '../UI/Backdrop/Backdrop'
 import './Menu.css'
 
 interface MenuProps {
@@ -9,7 +10,7 @@ interface MenuProps {
     logout(): void
 }
 
-export const Menu: React.FC<MenuProps> = ({ isOpen, user, onClose, logout })=> {
+export const Menu: React.FC<MenuProps> = ({ isOpen, user, onClose, logout }) => {
     const history = useHistory()
     const classes: String[] = ['Menu']
 

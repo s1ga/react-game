@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
-import MenuToggle from '../UI/MenuToggle/MenuToggle'
-import Menu from '../Menu/Menu'
+import { MenuToggle } from '../UI/MenuToggle/MenuToggle'
+import { Menu } from '../Menu/Menu'
 import { AuthContext } from '../../context/AuthContext'
 import audioSrc from './icons/audio.svg'
 import audioMutedSrc from './icons/audio_muted.svg'
