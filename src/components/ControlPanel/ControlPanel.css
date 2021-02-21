@@ -1,0 +1,31 @@
+.header {
+    height: 10%;
+    background-color:greenyellow;
+}
+
+.header__list {
+    width: 70%;
+    height: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-content: center;
+    list-style-type: none;
+    margin-block: 0;
+    padding-inline: 0;
+}
+
+.header__list__item img,
+#exit-icon {
+    width: 40px;
+    height: 40px;
+    transition: all .3s ease-in;
+}
+
+img:hover {
+    cursor: pointer;
+}
+
+#exit-icon:hover {
+    fill: red;
+}
