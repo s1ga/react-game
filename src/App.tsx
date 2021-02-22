@@ -59,7 +59,9 @@ function App() {
                   <Redirect to="/home" />
                 </Switch>
               : <Switch>
-                  <Route path="/" component={AuthPage} />
+                  <Route path="/">
+                    <AuthPage />
+                  </Route>
                   <Redirect to="/" />
                 </Switch>
           }

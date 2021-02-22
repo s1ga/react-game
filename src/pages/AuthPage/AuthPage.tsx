@@ -1,5 +1,5 @@
 import React, { useState, useContext, ChangeEvent, useEffect } from 'react'
-import { Switch, Redirect } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Tabs, Tab, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 import { AuthContext } from '../../context/AuthContext'
@@ -20,8 +20,9 @@ export const AuthPage: React.FC = () => {
         password: ''
     })
     const [message, setMessage] = useState<string>('')
+    const history = useHistory()
     const { login } = useContext(AuthContext)
-    const { loading, error, fetchData, clearError } = useFetch()
+    const { loading, fetchData } = useFetch()
     let timeout: number
 
     useEffect(() => {
@@ -29,7 +30,6 @@ export const AuthPage: React.FC = () => {
             setMessage('')
         }, 3000)
         return () => {
-            console.log('exiting')
             clearTimeout(timeout)
         }
     }, [message])
@@ -52,6 +52,7 @@ export const AuthPage: React.FC = () => {
             const { token, userId } = await fetchData('/api/auth/login', 'POST', {email: form.email, password: form.password})
             login(token, userId)
             clearInputs()
+            history.push('/')
         } catch (e) {
             setMessage(e)
         }

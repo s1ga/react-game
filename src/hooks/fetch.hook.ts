@@ -4,9 +4,6 @@ const BASE_URL = 'http://localhost:5000'
 
 export const useFetch = () => {
     const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string>('')
-
-    const clearError = useCallback(() => setError(''), [])
 
     const fetchData = useCallback(async (url: string, method: string = 'GET', body: any = null, headers: any = {}): Promise<any> => {
         setLoading(true)    
@@ -28,10 +25,9 @@ export const useFetch = () => {
             return data
         } catch (e) {
             setLoading(false)
-            setError(e.message)
             throw e.message
         }
     }, [])
 
-    return { loading, error, fetchData, clearError }
+    return { loading, fetchData }
 }
