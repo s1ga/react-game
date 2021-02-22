@@ -48,8 +48,8 @@ export const AuthPage: React.FC = () => {
     const loginHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         try {
             e.preventDefault()
-            const { token, userId } = await fetchData('/api/auth/login', 'POST', {email: form.email, password: form.password})
-            login(token, userId)
+            const { token, userId, name } = await fetchData('/api/auth/login', 'POST', {email: form.email, password: form.password})
+            login(token, userId, name)
             clearInputs()
             history.push('/')
         } catch (e) {

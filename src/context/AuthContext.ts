@@ -4,10 +4,9 @@ interface IAuthContext {
     token: string | null
     userId: string,
     isAuth: boolean,
-    login(userToken: string, userId: string): void,
+    login(userToken: string, userId: string, username: string): void,
     logout(): void   
 }
-
 
 const noop = (): void => {}
 
