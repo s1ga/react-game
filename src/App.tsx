@@ -3,8 +3,9 @@ import { Switch, BrowserRouter, Route, Redirect } from 'react-router-dom'
 import { AuthContext } from './context/AuthContext'
 import { useAuth } from './hooks/auth.hook'
 import { ControlPanel } from './components/ControlPanel/ControlPanel'
-import { StartPage } from './pages/StartPage/StartPage'
 import { Footer } from './components/Footer/Footer'
+import { StartPage } from './pages/StartPage/StartPage'
+import { AuthPage } from './pages/AuthPage/AuthPage' 
 import './App.css'
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   const [isMusicMuted, setIsMusicMuted] = useState<boolean>(true)
   const [option, setOption] = useState<string>('easy')
   const { token, userId, login, logout, ready } = useAuth()
-  const isAuth: boolean = true//!!token
+  const isAuth: boolean = !!token
 
   const clickHandler = (stateCase: string): void => {
     stateCase === 'audio' ?  setIsAudioMuted(!isAudioMuted) : setIsMusicMuted(!isMusicMuted) 
@@ -58,7 +59,7 @@ function App() {
                   <Redirect to="/home" />
                 </Switch>
               : <Switch>
-                  {/* <Route path="/" component={AuthPage} /> */}
+                  <Route path="/" component={AuthPage} />
                   <Redirect to="/" />
                 </Switch>
           }

@@ -8,7 +8,7 @@ export const useFetch = () => {
 
     const clearError = useCallback(() => setError(''), [])
 
-    const fetchData = useCallback(async (url: string, method: string, body: any = null, headers: any = {}): Promise<any> => {
+    const fetchData = useCallback(async (url: string, method: string = 'GET', body: any = null, headers: any = {}): Promise<any> => {
         setLoading(true)    
         try {
             if (body) {
@@ -29,7 +29,7 @@ export const useFetch = () => {
         } catch (e) {
             setLoading(false)
             setError(e.message)
-            throw e
+            throw e.message
         }
     }, [])
 
