@@ -20,7 +20,9 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, user, onClose, logout }) => 
         history.push('/')
     }
     
-    const clickHandler = (): void => onClose()
+    const clickHandler = (): void => {
+        onClose()
+    }
     
     if (!isOpen) {
         classes.push('close')

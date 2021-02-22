@@ -18,11 +18,21 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudi
     const [isMenu, setIsMenu] = useState<boolean>(false)
     const { isAuth, userId, logout } = useContext(AuthContext)
 
-    const audioClickHandler = (): void => clickHandler('audio')
-    const musicClickHandler = (): void => clickHandler('music')
+    const audioClickHandler = (): void => {
+        clickHandler('audio')
+    }
+    
+    const musicClickHandler = (): void => {
+        clickHandler('music')
+    }
 
-    const toggleMenuHandler = (): void => setIsMenu(prevState => !prevState)
-    const menuCloseHandler = (): void => setIsMenu(false)
+    const toggleMenuHandler = (): void => {
+        setIsMenu(prevState => !prevState)
+    }
+    
+    const menuCloseHandler = (): void => {
+        setIsMenu(false)
+    }
 
     return (
         <header className="header">

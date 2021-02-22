@@ -8,11 +8,16 @@ import './App.css'
 function App() {
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false)
   const [isMusicMuted, setIsMusicMuted] = useState<boolean>(true)
+  const [option, setOption] = useState<string>('easy')
   const { token, userId, login, logout, ready } = useAuth()
   const isAuth: boolean = !!token
 
   const clickHandler = (stateCase: string): void => {
     stateCase === 'audio' ?  setIsAudioMuted(!isAudioMuted) : setIsMusicMuted(!isMusicMuted) 
+  }
+
+  const modeHandler = (mode: string): void => {
+    setOption(mode)
   }
 
   return (
@@ -56,7 +61,7 @@ function App() {
                 </Switch>
           }
 
-          {/* <Footer /> */}
+          <Footer />
         </BrowserRouter>
       </div>
     </AuthContext.Provider>
