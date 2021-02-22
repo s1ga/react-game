@@ -1,0 +1,42 @@
+.start__page {
+    width: 100%;
+    height: 75%;
+    display: grid;
+    grid-gap: 30px;
+    align-content: center;
+    justify-content: center;
+}
+
+.start__page__switch__wrapper {
+    font-size: 18px;
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.start__page__switch { 
+    justify-self: center;
+}
+
+audio {
+    display: none;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+.start__page__btn {
+    display: block;
+    padding: 15px 80px;
+    font-size: 24px;
+    border: 1px solid black;
+    border-radius: 10px;
+    outline: none;
+    transition: all .3s ease-in;
+}
+
+.start__page__btn:hover {
+    cursor: pointer;
+    background-color: greenyellow;
+}

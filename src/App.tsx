@@ -3,6 +3,7 @@ import { Switch, BrowserRouter, Route, Redirect } from 'react-router-dom'
 import { AuthContext } from './context/AuthContext'
 import { useAuth } from './hooks/auth.hook'
 import { ControlPanel } from './components/ControlPanel/ControlPanel'
+import { StartPage } from './pages/StartPage/StartPage'
 import './App.css'
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
   const [isMusicMuted, setIsMusicMuted] = useState<boolean>(true)
   const [option, setOption] = useState<string>('easy')
   const { token, userId, login, logout, ready } = useAuth()
-  const isAuth: boolean = !!token
+  const isAuth: boolean = true//!!token
 
   const clickHandler = (stateCase: string): void => {
     stateCase === 'audio' ?  setIsAudioMuted(!isAudioMuted) : setIsMusicMuted(!isMusicMuted) 
@@ -37,31 +38,31 @@ function App() {
               ? <Switch>
                   <Route path="/home">
                     <StartPage
-                      mode={modeHandler} 
+                      setMode={modeHandler} 
                       isAudioMuted={isAudioMuted} 
                       isMusicMuted={isMusicMuted}
                     />
                   </Route>
 
                   <Route path="/statistics/:id">
-                    <StatisticsPage />
+                    {/* <StatisticsPage /> */}
                   </Route>
 
                   <Route path="/game">
-                    <GamePage 
+                    {/* <GamePage 
                       option={option}
                       
-                    />
+                    /> */}
                   </Route>
                   <Redirect to="/home" />
                 </Switch>
               : <Switch>
-                  <Route path="/" component={AuthPage} />
+                  {/* <Route path="/" component={AuthPage} /> */}
                   <Redirect to="/" />
                 </Switch>
           }
 
-          <Footer />
+          {/* <Footer /> */}
         </BrowserRouter>
       </div>
     </AuthContext.Provider>
