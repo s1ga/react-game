@@ -9,13 +9,13 @@ export const useAuth = () => {
     const [userId, setUserId] = useState<string>('')
     const [ready, setReady] = useState<boolean>(false)
 
-    const login = useCallback((userToken: string, id: string) => {
+    const login = useCallback((userToken: string, idUser: string) => {
         setToken(userToken)
-        setUserId(id)
+        setUserId(idUser)
 
         localStorage.setItem(localStorageName, JSON.stringify({
             token: userToken,
-            userId: id
+            userId: idUser
         }))
     }, [])
 

@@ -39,7 +39,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, user, onClose, logout }) => 
                     </li>
 
                     <li>
-                        <a onClick={logoutHanlder} href="/home">На главную</a>
+                        <a onClick={logoutHanlder} href="/">Выйти</a>
                     </li>
                 </ul>
 

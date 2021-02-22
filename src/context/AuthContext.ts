@@ -4,7 +4,7 @@ interface IAuthContext {
     token: string | null
     userId: string,
     isAuth: boolean,
-    login(): void,
+    login(userToken: string, userId: string): void,
     logout(): void   
 }
 
