@@ -28,7 +28,32 @@ function App() {
           />
         
           {
+            isAuth
+              ? <Switch>
+                  <Route path="/home">
+                    <StartPage
+                      mode={modeHandler} 
+                      isAudioMuted={isAudioMuted} 
+                      isMusicMuted={isMusicMuted}
+                    />
+                  </Route>
 
+                  <Route path="/statistics/:id">
+                    <StatisticsPage />
+                  </Route>
+
+                  <Route path="/game">
+                    <GamePage 
+                      option={option}
+                      
+                    />
+                  </Route>
+                  <Redirect to="/home" />
+                </Switch>
+              : <Switch>
+                  <Route path="/" component={AuthPage} />
+                  <Redirect to="/" />
+                </Switch>
           }
 
           {/* <Footer /> */}
