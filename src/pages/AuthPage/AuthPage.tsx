@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom'
 import { Tabs, Tab, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 import { AuthContext } from '../../context/AuthContext'
-import '../../hooks/fetch.hook'
 import { useFetch } from '../../hooks/fetch.hook'
 import './AuthPage.css'
 
@@ -23,7 +22,7 @@ export const AuthPage: React.FC = () => {
     const history = useHistory()
     const { login } = useContext(AuthContext)
     const { loading, fetchData } = useFetch()
-    let timeout: number
+    let timeout: number = window.setTimeout(() => {}, 0)
 
     useEffect(() => {
         timeout = window.setTimeout(() => {
@@ -80,8 +79,22 @@ export const AuthPage: React.FC = () => {
                 <TabPanel>
                     <h2>Войдите в систему</h2>
                     <form onSubmit={loginHandler}>
-                        <input type="text" value={form.email} name="email" onChange={changeHandler} autoComplete="username" />
-                        <input type="password" value={form.password} name="password" onChange={changeHandler} autoComplete="current-password" />
+                        <input 
+                            type="email" 
+                            name="email"
+                            required
+                            value={form.email} 
+                            onChange={changeHandler} 
+                            autoComplete="username" 
+                        />
+                        <input 
+                            type="password" 
+                            name="password" 
+                            required
+                            value={form.password} 
+                            onChange={changeHandler} 
+                            autoComplete="current-password" 
+                        />
                         <button type="submit" disabled={loading}>Войти</button>
                     </form>
                 </TabPanel>
@@ -89,9 +102,30 @@ export const AuthPage: React.FC = () => {
                 <TabPanel>
                     <h2>Зарегистрируйтесь</h2>
                     <form onSubmit={registerHandler}>
-                        <input type="text" name="email" value={form.email} onChange={changeHandler} autoComplete="username" />
-                        <input type="text" name="name" value={form.name} onChange={changeHandler} autoComplete="name" />
-                        <input type="password" name="password" value={form.password} onChange={changeHandler} autoComplete="new-password" />
+                        <input 
+                            type="email" 
+                            name="email" 
+                            required
+                            value={form.email} 
+                            onChange={changeHandler} 
+                            autoComplete="username" 
+                        />
+                        <input 
+                            type="text" 
+                            name="name" 
+                            required
+                            value={form.name} 
+                            onChange={changeHandler} 
+                            autoComplete="name" 
+                        />
+                        <input 
+                            type="password" 
+                            name="password" 
+                            required
+                            value={form.password} 
+                            onChange={changeHandler} 
+                            autoComplete="new-password" 
+                        />
                         <button type="submit" disabled={loading}>Зарегистрироваться</button>                     
                     </form>
                 </TabPanel>
