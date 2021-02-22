@@ -4,6 +4,7 @@ import { AuthContext } from './context/AuthContext'
 import { useAuth } from './hooks/auth.hook'
 import { ControlPanel } from './components/ControlPanel/ControlPanel'
 import { StartPage } from './pages/StartPage/StartPage'
+import { Footer } from './components/Footer/Footer'
 import './App.css'
 
 function App() {
@@ -62,7 +63,7 @@ function App() {
                 </Switch>
           }
 
-          {/* <Footer /> */}
+          <Footer />
         </BrowserRouter>
       </div>
     </AuthContext.Provider>

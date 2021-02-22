@@ -1,0 +1,35 @@
+.footer {
+    background-color:greenyellow;
+    height: 15%;
+    font-size: 21px;
+}
+
+.footer__list {
+    height: 100%;
+    width: 80%;
+    margin: 0 auto;
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 40px;
+    align-content: center;
+    list-style-type: none;
+}
+
+.footer__list__item {
+    align-self: center;
+}
+
+.footer__list__item a {
+    align-self: center;
+    text-decoration: none;
+    color: #000;
+}
+
+.footer__list__item a:hover {
+    text-decoration: underline;
+}
+
+img {
+    width: 150px;
+    height: auto;
+}
