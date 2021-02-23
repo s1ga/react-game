@@ -1,0 +1,38 @@
+.svg__wrapper {
+    height: 100%;
+    width: 70%;
+    margin: 0 auto;
+    display: grid;
+}
+
+svg {
+    align-self: center;
+    max-width: 100%;
+    max-height: 90%;
+}
+
+#subregions {
+    fill:#eeeeee;
+    stroke:#ffffff;
+    stroke-width: 0.5;
+}
+
+polygon {
+    transition: all .4s ease-in;
+}
+
+#regions {
+    fill:#ffffcd;
+    stroke:#ffffff;
+    stroke-width:2; 
+}
+
+#regions polygon:hover {
+    fill:red;
+    cursor: pointer;
+}
+
+circle {
+    fill:#cccccc;
+    stroke:none;
+}
