@@ -18,6 +18,20 @@ interface IModalState {
     modalText: string
 }
 
+interface IRegionQuestions {
+    __id: string
+    question: string
+    answer: string
+}
+
+interface IGameQuestion {
+    question: string
+    correctAnswer: number
+    opponentAnswer: number
+    answer: number
+    regionQuestions: Array<IRegionQuestions>
+}
+
 Modal.setAppElement('#root')
 
 const randomNumFromRange = (length: number): number => Math.floor(Math.random() * length)
@@ -52,6 +66,10 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     const [modal, setModal] = useState<IModalState>({ 
         modalIsOpen: false, questionIsOpen: false, answerIsOpen: false,
         finalIsOpen: false, modalText: ''
+    })
+    const [gameQuestion, setGameQuestion] = useState<IGameQuestion>({
+        question: '', correctAnswer: 0, opponentAnswer: 0,
+        answer: 0, regionQuestions: []
     })
     const history = useHistory()
     const { token, logout, userId } = useContext(AuthContext)
@@ -113,7 +131,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
             (async function fetching() {
                 try {
                     const data = await fetchData(`/api/questions?option=${option}&region=${currentRegion}`, { 'Authorization': token })
-                    setQuestions(data)
+                    setGameQuestion({ ...gameQuestion, regionQuestions: data })
                     openQuestionModal()
                 } catch (e) {
                     logout()
@@ -136,12 +154,15 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }, [roundCounter])
 
     const openQuestionModal = (): void => {
-        const i: number = randomNumFromRange(questions.length)
-        setQuestion(questions[i].question)
-        setCorrectAnswer(questions[i].answer)
+        const i: number = randomNumFromRange(gameQuestion.regionQuestions.length)
+        setGameQuestion({ 
+            ...gameQuestion, 
+            question: gameQuestion.regionQuestions[i].question, 
+            correctAnswer: +gameQuestion.regionQuestions[i].answer 
+        })
         setQuestionCounter(prev => prev + 1)
-        questions.splice(i, 1)
-        setQuestions(questions)
+        gameQuestion.regionQuestions.splice(i, 1)
+        setGameQuestion({ ...gameQuestion, regionQuestions: gameQuestion.regionQuestions })
 
         setModal({ ...modal, questionIsOpen: true })
     }
@@ -158,7 +179,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
-        setAnswer(e.target.value)
+        setGameQuestion({ ...gameQuestion, answer: +e.target.value })
     }
 
     const mapClickHandler = (e: React.MouseEvent<SVGPolygonElement>) => {
