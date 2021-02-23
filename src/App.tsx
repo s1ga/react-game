@@ -12,7 +12,7 @@ function App() {
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false)
   const [isMusicMuted, setIsMusicMuted] = useState<boolean>(true)
   const [option, setOption] = useState<string>('easy')
-  const { token, userId, login, logout, ready } = useAuth()
+  const { token, userId, username, login, logout, ready } = useAuth()
   const isAuth: boolean = !!token
 
   const clickHandler = (stateCase: string): void => {
@@ -25,7 +25,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{
-      token, userId, isAuth, login, logout
+      token, userId, username, isAuth, login, logout
     }}>
       <div className="App">
         <BrowserRouter>

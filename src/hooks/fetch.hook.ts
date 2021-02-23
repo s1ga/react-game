@@ -5,7 +5,7 @@ const BASE_URL = 'http://localhost:5000'
 export const useFetch = () => {
     const [loading, setLoading] = useState<boolean>(false)
 
-    const fetchData = useCallback(async (url: string, method: string = 'GET', body: any = null, headers: any = {}): Promise<any> => {
+    const fetchData = useCallback(async (url: string, headers: any = {}, method: string = 'GET', body: any = null): Promise<any> => {
         setLoading(true)    
         try {
             if (body) {

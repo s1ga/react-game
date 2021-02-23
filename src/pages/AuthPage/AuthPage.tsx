@@ -23,13 +23,14 @@ export const AuthPage: React.FC = () => {
     const { login } = useContext(AuthContext)
     const { loading, fetchData } = useFetch()
     let timeout: number = window.setTimeout(() => {}, 0)
-
+    
     useEffect(() => {
         timeout = window.setTimeout(() => {
             setMessage('')
         }, 3000)
+
         return () => {
-            clearTimeout(timeout)
+            window.clearTimeout(timeout)
         }
     }, [message])
 
@@ -48,7 +49,7 @@ export const AuthPage: React.FC = () => {
     const loginHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         try {
             e.preventDefault()
-            const { token, userId, name } = await fetchData('/api/auth/login', 'POST', {email: form.email, password: form.password})
+            const { token, userId, name } = await fetchData('/api/auth/login', {}, 'POST', {email: form.email, password: form.password})
             login(token, userId, name)
             clearInputs()
             history.push('/')
@@ -60,7 +61,7 @@ export const AuthPage: React.FC = () => {
     const registerHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         try {
             e.preventDefault()
-            const data = await fetchData('/api/auth/register', 'POST', {...form})
+            const data = await fetchData('/api/auth/register', {}, 'POST', {...form})
             setMessage(data.message)
             clearInputs()
         } catch (e) {
