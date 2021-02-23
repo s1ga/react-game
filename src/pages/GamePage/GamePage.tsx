@@ -62,7 +62,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     useEffect(() => {
         (async function fetching() {
             try {
-                const data = await fetchData(`/api/game`, { 'Authorization': token })
+                await fetchData(`/api/game`, { 'Authorization': token })
                 if (isStart) {
                     open = window.setTimeout(() => {
                         setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
@@ -79,6 +79,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
             }
         }) ()
         return () => {
+            setModal({ ...modal, finalIsOpen: false })
             window.clearTimeout(open)
             window.clearTimeout(close)
         }
@@ -98,8 +99,33 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }, [isFinalRound])
 
     useEffect(() => {
-
+        if (isFinal) {
+            fetchData(`/api/statistics/${userId}`, { 'Authorization': token }, 'POST', { points: points * regionCount })
+            open = window.setTimeout(() => {
+                setModal({ ...modal, finalIsOpen: true })
+            }, 1500)
+        }
     }, [isFinal])
+
+    useEffect(() => {
+        setIsStart(false)
+        if (currentRegion !== null) {
+            (async function fetching() {
+                try {
+                    const data = await fetchData(`/api/questions?option=${option}&region=${currentRegion}`, { 'Authorization': token })
+                    setQuestions(data)
+                    openQuestionModal()
+                } catch (e) {
+                    logout()
+                    history.push('/')
+                }
+            }) ()
+        }
+    }, [currentRegion])
+
+    const openQuestionModal = (): void => {
+        
+    }
 
     const mapClickHandler = (e: React.MouseEvent<SVGPolygonElement>) => {
         // if ()
