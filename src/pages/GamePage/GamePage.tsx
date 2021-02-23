@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, ChangeEvent } from 'react'
 import Modal from 'react-modal'
 import { Link, useHistory } from 'react-router-dom'
 import { BelarusMap } from '../../components/BelarusMap/BelarusMap'
@@ -123,8 +123,42 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
         }
     }, [currentRegion])
 
+    useEffect(() => {
+
+    }, [opponentAnswer])
+
+    useEffect(() => {
+
+    }, [rightAnswersCounter])
+
+    useEffect(() => {
+
+    }, [roundCounter])
+
     const openQuestionModal = (): void => {
-        
+        const i: number = randomNumFromRange(questions.length)
+        setQuestion(questions[i].question)
+        setCorrectAnswer(questions[i].answer)
+        setQuestionCounter(prev => prev + 1)
+        questions.splice(i, 1)
+        setQuestions(questions)
+
+        setModal({ ...modal, questionIsOpen: true })
+    }
+
+    const openAnswerModal = (): void => {
+    }
+
+    const closeAnswerModal = (): void => {
+
+    }
+
+    const questionClickhandler = (): void => {
+
+    }
+
+    const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
+        setAnswer(e.target.value)
     }
 
     const mapClickHandler = (e: React.MouseEvent<SVGPolygonElement>) => {
