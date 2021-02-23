@@ -32,6 +32,13 @@ interface IGameQuestion {
     regionQuestions: Array<IRegionQuestions>
 }
 
+interface ICounter {
+    question: number
+    rightAnswers: number
+    region: number
+    round: number
+}
+
 Modal.setAppElement('#root')
 
 const randomNumFromRange = (length: number): number => Math.floor(Math.random() * length)
@@ -70,6 +77,10 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     const [gameQuestion, setGameQuestion] = useState<IGameQuestion>({
         question: '', correctAnswer: 0, opponentAnswer: 0,
         answer: 0, regionQuestions: []
+    })
+    const [counter, setCounter] = useState<ICounter>({
+        question: 0, rightAnswers: 0, 
+        region: 0, round: 0
     })
     const history = useHistory()
     const { token, logout, userId } = useContext(AuthContext)
@@ -142,16 +153,36 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }, [currentRegion])
 
     useEffect(() => {
+        if (!isStart) {
+            setModal({ ...modal, questionIsOpen: false })
+            const { answer, opponentAnswer, correctAnswer } = gameQuestion
+            if (isRightAnswer(answer, opponentAnswer, correctAnswer)) {
+                setCounter(prev => ({ ...prev, rightAnswers: prev.rightAnswers + 1 }))
+            }
+            openAnswerModal()
+        }
+    }, [gameQuestion.opponentAnswer])
 
-    }, [opponentAnswer])
+    // useEffect(() => {
+
+    // }, [rightAnswersCounter])
 
     useEffect(() => {
-
-    }, [rightAnswersCounter])
-
-    useEffect(() => {
-
-    }, [roundCounter])
+        if (counter.round === 6) {
+            counter.region === 3 ? setIsFinalRound(true) : setIsFinal(true)
+        } else if (counter.round === 7) {
+            setIsFinal(true)
+        } else {
+            document.addEventListener('click', handler, true)
+            open = setTimeout(() => {
+                setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
+            }, 1500)
+            close = setTimeout(() => {
+                document.removeEventListener('click', handler, true)
+                setModal({ ...modal, modalIsOpen: false })
+            }, 4000)
+        }
+    }, [counter.round])
 
     const openQuestionModal = (): void => {
         const i: number = randomNumFromRange(gameQuestion.regionQuestions.length)
@@ -160,7 +191,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
             question: gameQuestion.regionQuestions[i].question, 
             correctAnswer: +gameQuestion.regionQuestions[i].answer 
         })
-        setQuestionCounter(prev => prev + 1)
+        setCounter(prev => ({ ...prev, question: prev.question + 1 }))
         gameQuestion.regionQuestions.splice(i, 1)
         setGameQuestion({ ...gameQuestion, regionQuestions: gameQuestion.regionQuestions })
 
