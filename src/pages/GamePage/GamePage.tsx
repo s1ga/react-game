@@ -1,14 +1,21 @@
-import { maxHeaderSize } from 'node:http'
 import React, { useState, useEffect, useContext } from 'react'
 import Modal from 'react-modal'
 import { Link, useHistory } from 'react-router-dom'
-import BelarusMap from '../../components/Belarus_Map/Belarus_Map'
+import { BelarusMap } from '../../components/BelarusMap/BelarusMap'
 import { AuthContext } from '../../context/AuthContext'
 import { useFetch } from '../../hooks/fetch.hook'
 import './GamePage.css'
 
 interface GamePageProps {
     option: string
+}
+
+interface IModalState {
+    modalIsOpen: boolean
+    questionIsOpen: boolean
+    answerIsOpen: boolean
+    finalIsOpen: boolean
+    modalText: string
 }
 
 Modal.setAppElement('#root')
@@ -42,6 +49,11 @@ const handler = (e: React.MouseEvent): void => {
 
 export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     const [isStart, setIsStart] = useState<boolean>(true)
+    const [modal, setModal] = useState<IModalState>({ 
+        modalIsOpen: false, questionIsOpen: false, answerIsOpen: false,
+        finalIsOpen: false, modalText: ''
+    })
+    const history = useHistory()
     const { token, logout, userId } = useContext(AuthContext)
     const { fetchData, loading } = useFetch()
     let open: number
@@ -53,11 +65,12 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 const data = await fetchData(`/api/game`, { 'Authorization': token })
                 if (isStart) {
                     open = window.setTimeout(() => {
-                        setModalText('Выберите область')
-                        modalOpen()
+                        setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
+                        // modalOpen()
                     }, 100)
                     close = window.setTimeout(() => {
-                        closeModal()
+                        // closeModal()
+                        setModal({ ...modal, modalIsOpen: false })
                     }, 3000)
                 }
             } catch (e) {
@@ -65,60 +78,61 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 history.push('/')
             }
         }) ()
-
         return () => {
             window.clearTimeout(open)
             window.clearTimeout(close)
         }
     }, [])
 
+    useEffect(() => {
+        if (isFinalRound) {
+            open = window.setTimeout(() => {
+                setModal({ ...modal, modalIsOpen: true, modalText: 'Финальный раунд' })
+            }, 1500)
+
+            close = window.setTimeout(() => {
+                setModal({ ...modal, modalIsOpen: false })
+                // setCurrentRegion(0)
+            }, 3000)
+        }
+    }, [isFinalRound])
+
+    useEffect(() => {
+
+    }, [isFinal])
+
+    const mapClickHandler = (e: React.MouseEvent<SVGPolygonElement>) => {
+        // if ()
+    }
+
     return (
         <div id="game">
             <BelarusMap click={mapClickHandler} />
-            <Modal
+            
+            <Modal 
                 className="Modal"
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
+                isOpen={modal.modalIsOpen}
                 contentLabel="Start Modal"
-            >
-            <h2>{modalText}</h2>    
+            > 
+                <h2>{ modal.modalText }</h2>
             </Modal>
-            <Modal
+
+            <Modal 
                 className="Modal"
-                isOpen={questionIsOpen}
-                // onRequestClose={closeModal}
+                isOpen={modal.questionIsOpen}
                 contentLabel="Question Modal"
-            >
-                <h2>{question}</h2>
-                <input onChange={changeHandler} value={answer} />
-                <button onClick={questionClickhandler}>Ответить</button>
-            </Modal>
-            <Modal
+            />
+
+            <Modal 
                 className="Modal"
-                isOpen={answerIsOpen}
-                // onRequestClose={closeModal}
+                isOpen={modal.answerIsOpen}
                 contentLabel="Answer Modal"
-            >
-                <h2>{question}</h2>
-                <div>
-                    <p>Ваш ответ: {answer}</p>
-                    {/* <p>{time}</p> */}
-                </div>
-                <div>
-                    <p>Ответ противника: {opponentAnswer}</p>
-                    {/* <p>{opponentTime}</p> */}
-                </div>
-                <div>
-                    Правильный ответ: {correctAnswer}
-                </div>
-            </Modal>
-            <Modal
+            />
+            <Modal 
                 className="Modal"
-                isOpen={finalIsOpen}
-            >
-                <p>{ regionCount > 3 || isFinalRound ? 'Поздравлем, вы выиграли!' : 'К сожалению, вы проиграли' }</p>
-                <Link to="/">Вернуться на главную</Link>
-            </Modal>
+                isOpen={modal.answerIsOpen}
+                contentLabel="Final Modal"
+            />
         </div>
     )
 }
