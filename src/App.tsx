@@ -6,6 +6,7 @@ import { ControlPanel } from './components/ControlPanel/ControlPanel'
 import { Footer } from './components/Footer/Footer'
 import { StartPage } from './pages/StartPage/StartPage'
 import { StatisticsPage } from './pages/StatisticsPage/StatisticsPage'
+import { GamePage } from './pages/GamePage/GamePage'
 import { AuthPage } from './pages/AuthPage/AuthPage' 
 import './App.css'
 
@@ -52,10 +53,10 @@ function App() {
                   </Route>
 
                   <Route path="/game">
-                    {/* <GamePage 
+                    <GamePage 
                       option={option}
                       
-                    /> */}
+                    />
                   </Route>
                   <Redirect to="/home" />
                 </Switch>

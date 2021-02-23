@@ -1,0 +1,13 @@
+#game {
+    height: 75%;
+}
+
+.Modal {
+    position: absolute;
+    top: 30%;
+    left: 25%;
+    width: 400px;
+    height: 150px;
+    border-radius: 50%;
+    text-align: center;
+}
