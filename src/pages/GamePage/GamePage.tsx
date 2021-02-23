@@ -39,6 +39,12 @@ interface ICounter {
     round: number
 }
 
+interface IGameState {
+    isStart: boolean
+    isFinal: boolean
+    isFinalRound: boolean
+}
+
 Modal.setAppElement('#root')
 
 const randomNumFromRange = (length: number): number => Math.floor(Math.random() * length)
@@ -69,7 +75,10 @@ const handler = (e: React.MouseEvent): void => {
 }   
 
 export const GamePage: React.FC<GamePageProps> = ({ option }) => {
-    const [isStart, setIsStart] = useState<boolean>(true)
+    // const [isLoading, setIsLoading] = useState(true)
+    const [gameState, setGameState] = useState<IGameState>({
+        isStart: true, isFinal: false, isFinalRound: false
+    })
     const [modal, setModal] = useState<IModalState>({ 
         modalIsOpen: false, questionIsOpen: false, answerIsOpen: false,
         finalIsOpen: false, modalText: ''
@@ -85,6 +94,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     const history = useHistory()
     const { token, logout, userId } = useContext(AuthContext)
     const { fetchData, loading } = useFetch()
+    const points: number = 500
     let open: number
     let close: number
 
@@ -92,7 +102,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
         (async function fetching() {
             try {
                 await fetchData(`/api/game`, { 'Authorization': token })
-                if (isStart) {
+                if (gameState.isStart) {
                     open = window.setTimeout(() => {
                         setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
                         // modalOpen()
@@ -115,7 +125,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }, [])
 
     useEffect(() => {
-        if (isFinalRound) {
+        if (gameState.isFinalRound) {
             open = window.setTimeout(() => {
                 setModal({ ...modal, modalIsOpen: true, modalText: 'Финальный раунд' })
             }, 1500)
@@ -125,19 +135,19 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 // setCurrentRegion(0)
             }, 3000)
         }
-    }, [isFinalRound])
+    }, [gameState.isFinalRound])
 
     useEffect(() => {
-        if (isFinal) {
-            fetchData(`/api/statistics/${userId}`, { 'Authorization': token }, 'POST', { points: points * regionCount })
+        if (gameState.isFinal) {
+            fetchData(`/api/statistics/${userId}`, { 'Authorization': token }, 'POST', { points: points * counter.region })
             open = window.setTimeout(() => {
                 setModal({ ...modal, finalIsOpen: true })
             }, 1500)
         }
-    }, [isFinal])
+    }, [gameState.isFinal])
 
     useEffect(() => {
-        setIsStart(false)
+        setGameState({ ...gameState, isStart: false })
         if (currentRegion !== null) {
             (async function fetching() {
                 try {
@@ -153,7 +163,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }, [currentRegion])
 
     useEffect(() => {
-        if (!isStart) {
+        if (!gameState.isStart) {
             setModal({ ...modal, questionIsOpen: false })
             const { answer, opponentAnswer, correctAnswer } = gameQuestion
             if (isRightAnswer(answer, opponentAnswer, correctAnswer)) {
@@ -169,15 +179,17 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
 
     useEffect(() => {
         if (counter.round === 6) {
-            counter.region === 3 ? setIsFinalRound(true) : setIsFinal(true)
+            counter.region === 3 
+                ? setGameState({ ...gameState, isFinalRound: true }) 
+                : setGameState({ ...gameState, isFinal: true })
         } else if (counter.round === 7) {
-            setIsFinal(true)
+            setGameState({ ...gameState, isFinal: true })
         } else {
             document.addEventListener('click', handler, true)
-            open = setTimeout(() => {
+            open = window.setTimeout(() => {
                 setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
             }, 1500)
-            close = setTimeout(() => {
+            close = window.setTimeout(() => {
                 document.removeEventListener('click', handler, true)
                 setModal({ ...modal, modalIsOpen: false })
             }, 4000)
