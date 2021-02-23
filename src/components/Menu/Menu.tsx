@@ -22,7 +22,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, user, onClose, logout }) => 
     
     const clickHandler = (): void => {
         onClose()
-    }
+    }   
     
     if (!isOpen) {
         classes.push('close')
@@ -44,9 +44,9 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, user, onClose, logout }) => 
                         <a onClick={logoutHanlder} href="/">Выйти</a>
                     </li>
                 </ul>
-
-                { isOpen ? <Backdrop onClick={onClose} /> : null }
             </nav>
+            
+            { isOpen ? <Backdrop onClick={onClose} /> : null }
         </>
     )
 }

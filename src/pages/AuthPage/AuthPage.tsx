@@ -1,3 +1,4 @@
+import { time } from 'node:console'
 import React, { useState, useContext, ChangeEvent, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Tabs, Tab, TabList, TabPanel } from 'react-tabs'
@@ -22,10 +23,9 @@ export const AuthPage: React.FC = () => {
     const history = useHistory()
     const { login } = useContext(AuthContext)
     const { loading, fetchData } = useFetch()
-    let timeout: number = window.setTimeout(() => {}, 0)
-    
+
     useEffect(() => {
-        timeout = window.setTimeout(() => {
+        const timeout = window.setTimeout(() => {
             setMessage('')
         }, 3000)
 
