@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, EffectCallback } from 'react'
 import { useHistory } from 'react-router-dom'
+import { Loader } from '../../components/UI/Loader/Loader'
 import { AuthContext } from '../../context/AuthContext'
 import { useFetch } from '../../hooks/fetch.hook'
 import './StatisticsPage.css'
@@ -19,25 +20,36 @@ export const StatisticsPage: React.FC = () => {
 
     useEffect(() => {
         (async function fetching() {
-            const data = await fetchData(`/api/statistics/${userId}`, { 'Authorization': token }) 
-            console.log(data)
-            // setStatistics(data)
+            try {
+                const data = await fetchData(`/api/statistics/${userId}`, { 'Authorization': token }) 
+                setStatistics(data.statistics)
+            } catch (e) {
+                logout()
+                history.push('/')
+            }
         }) ()
     }, [])
 
     return (
         <div className="Statistics">
-            <h2>Statistics</h2>
+            <h2>{ username } statistics</h2>
             <div>
-                <ul>
-                    { statistics.length
-                      ? statistics.map((item: Statistics) => {
-                            const date = new Date(item.date)
-                            return <li key={item._id}>{ date.toLocaleDateString() } { date.toLocaleTimeString() } - { item.points } очков</li> 
-                        }) 
-                      : <p>Информации пока нет</p>
-                    }
-                </ul>
+                {
+                    loading 
+                        ? <Loader />
+                        : <ul>
+                            { statistics.length
+                                ? statistics.map((item: Statistics) => {
+                                        const date = new Date(item.date)
+                                        return <li key={item._id}>
+                                                { date.toLocaleDateString() } { date.toLocaleTimeString() } - { item.points } очков
+                                            </li> 
+                                    }) 
+                                : <p>Информации пока нет</p>
+                            }
+                          </ul>
+                
+                }
             </div>
         </div>
     )

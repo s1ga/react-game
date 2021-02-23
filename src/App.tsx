@@ -5,6 +5,7 @@ import { useAuth } from './hooks/auth.hook'
 import { ControlPanel } from './components/ControlPanel/ControlPanel'
 import { Footer } from './components/Footer/Footer'
 import { StartPage } from './pages/StartPage/StartPage'
+import { StatisticsPage } from './pages/StatisticsPage/StatisticsPage'
 import { AuthPage } from './pages/AuthPage/AuthPage' 
 import './App.css'
 
@@ -47,7 +48,7 @@ function App() {
                   </Route>
 
                   <Route path="/statistics/:id">
-                    {/* <StatisticsPage /> */}
+                    <StatisticsPage />
                   </Route>
 
                   <Route path="/game">

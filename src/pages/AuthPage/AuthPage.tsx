@@ -52,7 +52,7 @@ export const AuthPage: React.FC = () => {
             const { token, userId, name } = await fetchData('/api/auth/login', {}, 'POST', {email: form.email, password: form.password})
             login(token, userId, name)
             clearInputs()
-            history.push('/')
+            history.push('/home')
         } catch (e) {
             setMessage(e)
         }
