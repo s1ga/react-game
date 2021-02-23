@@ -1,19 +1,76 @@
+import { maxHeaderSize } from 'node:http'
 import React, { useState, useEffect, useContext } from 'react'
 import Modal from 'react-modal'
 import { Link, useHistory } from 'react-router-dom'
 import BelarusMap from '../../components/Belarus_Map/Belarus_Map'
 import { AuthContext } from '../../context/AuthContext'
+import { useFetch } from '../../hooks/fetch.hook'
 import './GamePage.css'
 
 interface GamePageProps {
     option: string
-    
 }
 
 Modal.setAppElement('#root')
 
-export const GamePage: React.FC<GamePageProps> = ({ option }) => {
+const randomNumFromRange = (length: number): number => Math.floor(Math.random() * length)
 
+const getOpponentAnswer = (correctAnswer: number): number => {
+    let shift: number = 10
+    if (correctAnswer > 10000) {
+        shift = 1000
+    } else if (correctAnswer > 100000) {
+        shift = 5000
+    }
+
+    const max = Math.ceil(correctAnswer + shift)
+    const min = Math.floor(correctAnswer - shift)
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+const isRightAnswer = (answer: number, opponentAnswer: number, correctAnswer: number): boolean => {
+    const answerVariation = Math.abs(correctAnswer - answer)
+    const opponentAnswerVariation = Math.abs(correctAnswer - opponentAnswer)
+
+    return answerVariation < opponentAnswerVariation ? true : false
+}
+
+const handler = (e: React.MouseEvent): void => {
+    e.preventDefault()
+    e.stopPropagation()
+}   
+
+export const GamePage: React.FC<GamePageProps> = ({ option }) => {
+    const [isStart, setIsStart] = useState<boolean>(true)
+    const { token, logout, userId } = useContext(AuthContext)
+    const { fetchData, loading } = useFetch()
+    let open: number
+    let close: number
+
+    useEffect(() => {
+        (async function fetching() {
+            try {
+                const data = await fetchData(`/api/game`, { 'Authorization': token })
+                if (isStart) {
+                    open = window.setTimeout(() => {
+                        setModalText('Выберите область')
+                        modalOpen()
+                    }, 100)
+                    close = window.setTimeout(() => {
+                        closeModal()
+                    }, 3000)
+                }
+            } catch (e) {
+                logout()
+                history.push('/')
+            }
+        }) ()
+
+        return () => {
+            window.clearTimeout(open)
+            window.clearTimeout(close)
+        }
+    }, [])
 
     return (
         <div id="game">
