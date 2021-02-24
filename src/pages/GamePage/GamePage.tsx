@@ -211,14 +211,40 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }
 
     const openAnswerModal = (): void => {
+        setModal({ ...modal, answerIsOpen: true })
+        close = window.setTimeout(() => {
+            closeAnswerModal()
+        }, 4000)
     }
 
     const closeAnswerModal = (): void => {
+        setGameQuestion({ ...gameQuestion, answer: 0 })
 
+        if (counter.question === 3) {
+            if (!gameState.isFinalRound) {
+                const region = document.querySelector(`[data-id="${currentRegion}"]`) as HTMLElement
+                if (counter.rightAnswers >= 2) {
+                    
+                } else {
+                    
+                } 
+            } else {
+                counter.rightAnswers >= 2 
+                    ? setGameState({ ...gameState, isFinalRound: false })
+                    : setGameState({ ...gameState, isFinalRound: true })
+            }
+
+            setCounter(prev => ({ ...prev, question: 0, rightAnswers: 0, round: prev.round + 1 }))
+            setModal({ ...modal, answerIsOpen: false })
+        } else {
+            setModal({ ...modal, answerIsOpen: false })
+            openQuestionModal()
+        }
     }
 
     const questionClickhandler = (): void => {
-
+        const opponentAnswer = getOpponentAnswer(gameQuestion.correctAnswer)
+        setGameQuestion({ ...gameQuestion, opponentAnswer })
     }
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
