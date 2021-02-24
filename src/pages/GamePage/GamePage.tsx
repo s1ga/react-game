@@ -165,7 +165,8 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 try {
                     setGameQuestion({ ...gameQuestion, isLoaded: false })
                     const data = await fetchData(`/api/game/questions?option=${option}&region=${regions.current}`, { 'Authorization': token })
-                    setGameQuestion({ ...gameQuestion, regionQuestions: data, isLoaded: true, answer: '' })
+                    setCounter({ ...counter, rightAnswers: 0 })
+                    setGameQuestion({ ...gameQuestion, regionQuestions: data, isLoaded: true })
                 } catch (e) {
                     logout()
                     history.push('/')
@@ -240,6 +241,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }
 
     const openAnswerModal = (): void => {
+        setGameQuestion({ ...gameQuestion, answer: '' })
         setModal({ ...modal, answerIsOpen: true })
         close = window.setTimeout(() => {
             closeAnswerModal()
@@ -247,9 +249,6 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }
 
     const closeAnswerModal = (): void => {
-        // window.clearTimeout(close)
-        // setGameQuestion({ ...gameQuestion, answer: '' })
-
         if (counter.question === 3) {
             if (!gameState.isFinalRound) {
                 const region = document.querySelector(`[data-id="${regions.current}"]`) as HTMLElement
@@ -266,7 +265,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
             }
 
             setModal({ ...modal, answerIsOpen: false })
-            setCounter(prev => ({ ...prev, question: 0, rightAnswers: 0, round: prev.round + 1 }))
+            setCounter(prev => ({ ...prev, question: 0, round: prev.round + 1 }))
         } else {
             setModal({ ...modal, answerIsOpen: false })
             openQuestionModal()
