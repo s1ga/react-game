@@ -288,18 +288,37 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 className="Modal"
                 isOpen={modal.questionIsOpen}
                 contentLabel="Question Modal"
-            />
+            >
+                <h2>{ gameQuestion.question }</h2>
+                <input type="number" value={gameQuestion.answer} onChange={changeHandler} />
+                <button onClick={questionClickhandler}>Ответить</button>
+            </Modal>
 
             <Modal 
                 className="Modal"
                 isOpen={modal.answerIsOpen}
                 contentLabel="Answer Modal"
-            />
+            >
+                <h2>{ gameQuestion.question }</h2>
+                <p>
+                    <span>Ваш ответ: { gameQuestion.answer }</span>
+                </p>
+                <p>
+                    <span>Ответ противника: { gameQuestion.opponentAnswer }</span>
+                </p>
+                <p>
+                    <span>Правильный ответ: { gameQuestion.correctAnswer }</span>
+                </p>
+            </Modal>
+            
             <Modal 
                 className="Modal"
                 isOpen={modal.answerIsOpen}
                 contentLabel="Final Modal"
-            />
+            >
+                <h2>{ counter.region > 3 ? 'Поздравлем, вы выиграли!' : 'К сожалению, вы проиграли' }</h2>
+                <Link to="/home">Вернуться на главную</Link>
+            </Modal>
         </div>
     )
 }
