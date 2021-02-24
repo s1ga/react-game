@@ -16,7 +16,7 @@ export const useFetch = () => {
             const res = await fetch(BASE_URL + url, { method, body, headers })
             const data = await res.json()
 
-            if (res.status === 401) {
+            if (!res.ok) {
                 throw new Error(data.message || 'Что-то пошло не так')
             } else {
                 setLoading(false)

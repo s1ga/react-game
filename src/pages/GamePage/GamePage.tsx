@@ -1,3 +1,4 @@
+import { countReset } from 'node:console'
 import React, { useState, useEffect, useContext, useRef, ObjectHTMLAttributes } from 'react'
 import Modal from 'react-modal'
 import { Link, useHistory } from 'react-router-dom'
@@ -28,8 +29,9 @@ interface IGameQuestion {
     question: string
     correctAnswer: number
     opponentAnswer: number
-    answer: number
+    answer: string
     regionQuestions: Array<IRegionQuestions>
+    isLoaded: boolean
 }
 
 interface ICounter {
@@ -43,6 +45,7 @@ interface IGameState {
     isStart: boolean
     isFinal: boolean
     isFinalRound: boolean
+    isWinner: boolean
 }
 
 interface IRegions {
@@ -75,14 +78,14 @@ const isRightAnswer = (answer: number, opponentAnswer: number, correctAnswer: nu
 }
 
 const handler = (e: MouseEvent) => {
-    e.preventDefault()
     e.stopPropagation()
+    e.preventDefault()
 }   
 
 export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     // const [isLoading, setIsLoading] = useState(true)
     const [gameState, setGameState] = useState<IGameState>({
-        isStart: true, isFinal: false, isFinalRound: false
+        isStart: true, isFinal: false, isFinalRound: false, isWinner: false
     })
     const [modal, setModal] = useState<IModalState>({ 
         modalIsOpen: false, questionIsOpen: false, answerIsOpen: false,
@@ -90,7 +93,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     })
     const [gameQuestion, setGameQuestion] = useState<IGameQuestion>({
         question: '', correctAnswer: 0, opponentAnswer: 0,
-        answer: 0, regionQuestions: []
+        answer: '', regionQuestions: [], isLoaded: false
     })
     const [counter, setCounter] = useState<ICounter>({
         question: 0, rightAnswers: 0, 
@@ -160,9 +163,9 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
         if (regions.current !== null) {
             (async function fetching() {
                 try {
-                    const data = await fetchData(`/api/questions?option=${option}&region=${regions.current}`, { 'Authorization': token })
-                    setGameQuestion({ ...gameQuestion, regionQuestions: data })
-                    openQuestionModal()
+                    setGameQuestion({ ...gameQuestion, isLoaded: false })
+                    const data = await fetchData(`/api/game/questions?option=${option}&region=${regions.current}`, { 'Authorization': token })
+                    setGameQuestion({ ...gameQuestion, regionQuestions: data, isLoaded: true, answer: '' })
                 } catch (e) {
                     logout()
                     history.push('/')
@@ -172,27 +175,41 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }, [regions.current])
 
     useEffect(() => {
+        if (gameQuestion.isLoaded) {
+            openQuestionModal()
+        }
+    }, [gameQuestion.isLoaded])
+
+    useEffect(() => {
         if (!gameState.isStart) {
-            setModal({ ...modal, questionIsOpen: false })
             const { answer, opponentAnswer, correctAnswer } = gameQuestion
-            if (isRightAnswer(answer, opponentAnswer, correctAnswer)) {
+            if (isRightAnswer(+answer, opponentAnswer, correctAnswer)) {
                 setCounter(prev => ({ ...prev, rightAnswers: prev.rightAnswers + 1 }))
+            } else {
+                openAnswerModal()
             }
-            openAnswerModal()
         }
     }, [gameQuestion.opponentAnswer])
 
-    // useEffect(() => {
-
-    // }, [rightAnswersCounter])
+    useEffect(() => {
+        if (!gameState.isStart && counter.question) {
+            openAnswerModal()
+        }
+    }, [counter.rightAnswers])
 
     useEffect(() => {
         if (counter.round === 6) {
-            counter.region === 3 
-                ? setGameState({ ...gameState, isFinalRound: true }) 
-                : setGameState({ ...gameState, isFinal: true })
+            if (counter.region === 3) {
+                setGameState({ ...gameState, isFinalRound: true }) 
+            } else {
+                counter.region > 3 
+                    ? setGameState({ ...gameState, isWinner: true, isFinal: true }) 
+                    : setGameState({ ...gameState, isWinner: false, isFinal: true })
+            }
         } else if (counter.round === 7) {
-            setGameState({ ...gameState, isFinal: true })
+            counter.rightAnswers >= 2 
+                ? setGameState({ ...gameState, isWinner: true, isFinal: true })
+                : setGameState({ ...gameState, isWinner: false, isFinal: true })
         } else {
             // document.addEventListener('click', handler, true)
             gameRef.current!.addEventListener('click', handler, true)
@@ -209,15 +226,16 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
 
     const openQuestionModal = (): void => {
         const i: number = randomNumFromRange(gameQuestion.regionQuestions.length)
+        const { question, answer } = gameQuestion.regionQuestions[i]
+    
+        gameQuestion.regionQuestions.splice(i, 1)
         setGameQuestion({ 
             ...gameQuestion, 
-            question: gameQuestion.regionQuestions[i].question, 
-            correctAnswer: +gameQuestion.regionQuestions[i].answer 
+            question, 
+            correctAnswer: +answer,
+            regionQuestions: gameQuestion.regionQuestions
         })
         setCounter(prev => ({ ...prev, question: prev.question + 1 }))
-        gameQuestion.regionQuestions.splice(i, 1)
-        setGameQuestion({ ...gameQuestion, regionQuestions: gameQuestion.regionQuestions })
-
         setModal({ ...modal, questionIsOpen: true })
     }
 
@@ -229,7 +247,8 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }
 
     const closeAnswerModal = (): void => {
-        setGameQuestion({ ...gameQuestion, answer: 0 })
+        // window.clearTimeout(close)
+        // setGameQuestion({ ...gameQuestion, answer: '' })
 
         if (counter.question === 3) {
             if (!gameState.isFinalRound) {
@@ -246,21 +265,22 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                     : setGameState({ ...gameState, isFinalRound: true })
             }
 
-            setCounter(prev => ({ ...prev, question: 0, rightAnswers: 0, round: prev.round + 1 }))
             setModal({ ...modal, answerIsOpen: false })
+            setCounter(prev => ({ ...prev, question: 0, rightAnswers: 0, round: prev.round + 1 }))
         } else {
             setModal({ ...modal, answerIsOpen: false })
             openQuestionModal()
         }
     }
 
-    const questionClickhandler = (): void => {
+    const questionClickHandler = (): void => {
         const opponentAnswer = getOpponentAnswer(gameQuestion.correctAnswer)
+        setModal({ ...modal, questionIsOpen: false })
         setGameQuestion({ ...gameQuestion, opponentAnswer })
     }
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setGameQuestion({ ...gameQuestion, answer: +e.target.value })
+        setGameQuestion({ ...gameQuestion, answer: e.target.value })
     }
 
     const mapClickHandler = (e: React.MouseEvent<SVGPolygonElement>) => {
@@ -290,8 +310,8 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 contentLabel="Question Modal"
             >
                 <h2>{ gameQuestion.question }</h2>
-                <input type="number" value={gameQuestion.answer} onChange={changeHandler} />
-                <button onClick={questionClickhandler}>Ответить</button>
+                <input type="text" value={gameQuestion.answer} onChange={changeHandler} />
+                <button onClick={questionClickHandler}>Ответить</button>
             </Modal>
 
             <Modal 
@@ -313,10 +333,10 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
             
             <Modal 
                 className="Modal"
-                isOpen={modal.answerIsOpen}
+                isOpen={modal.finalIsOpen}
                 contentLabel="Final Modal"
             >
-                <h2>{ counter.region > 3 ? 'Поздравлем, вы выиграли!' : 'К сожалению, вы проиграли' }</h2>
+                <h2>{ gameState.isWinner ? 'Поздравлем, вы выиграли!' : 'К сожалению, вы проиграли' }</h2>
                 <Link to="/home">Вернуться на главную</Link>
             </Modal>
         </div>
