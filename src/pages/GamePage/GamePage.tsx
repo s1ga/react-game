@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, ChangeEvent } from 'react'
+import React, { useState, useEffect, useContext, useRef, ObjectHTMLAttributes } from 'react'
 import Modal from 'react-modal'
 import { Link, useHistory } from 'react-router-dom'
 import { BelarusMap } from '../../components/BelarusMap/BelarusMap'
@@ -45,6 +45,11 @@ interface IGameState {
     isFinalRound: boolean
 }
 
+interface IRegions {
+    current: number | null
+    playing: Number[]
+}
+
 Modal.setAppElement('#root')
 
 const randomNumFromRange = (length: number): number => Math.floor(Math.random() * length)
@@ -69,7 +74,7 @@ const isRightAnswer = (answer: number, opponentAnswer: number, correctAnswer: nu
     return answerVariation < opponentAnswerVariation ? true : false
 }
 
-const handler = (e: React.MouseEvent): void => {
+const handler = (e: MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 }   
@@ -91,6 +96,10 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
         question: 0, rightAnswers: 0, 
         region: 0, round: 0
     })
+    const [regions, setRegions] = useState<IRegions>({
+        current: null, playing: [1, 2, 3, 4, 5, 6]
+    })
+    const gameRef = useRef<HTMLDivElement | null>(null)
     const history = useHistory()
     const { token, logout, userId } = useContext(AuthContext)
     const { fetchData, loading } = useFetch()
@@ -132,7 +141,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
 
             close = window.setTimeout(() => {
                 setModal({ ...modal, modalIsOpen: false })
-                // setCurrentRegion(0)
+                setRegions({ ...regions, current: 0 })
             }, 3000)
         }
     }, [gameState.isFinalRound])
@@ -148,10 +157,10 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
 
     useEffect(() => {
         setGameState({ ...gameState, isStart: false })
-        if (currentRegion !== null) {
+        if (regions.current !== null) {
             (async function fetching() {
                 try {
-                    const data = await fetchData(`/api/questions?option=${option}&region=${currentRegion}`, { 'Authorization': token })
+                    const data = await fetchData(`/api/questions?option=${option}&region=${regions.current}`, { 'Authorization': token })
                     setGameQuestion({ ...gameQuestion, regionQuestions: data })
                     openQuestionModal()
                 } catch (e) {
@@ -160,7 +169,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 }
             }) ()
         }
-    }, [currentRegion])
+    }, [regions.current])
 
     useEffect(() => {
         if (!gameState.isStart) {
@@ -185,12 +194,14 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
         } else if (counter.round === 7) {
             setGameState({ ...gameState, isFinal: true })
         } else {
-            document.addEventListener('click', handler, true)
+            // document.addEventListener('click', handler, true)
+            gameRef.current!.addEventListener('click', handler, true)
             open = window.setTimeout(() => {
                 setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
             }, 1500)
             close = window.setTimeout(() => {
-                document.removeEventListener('click', handler, true)
+                // document.removeEventListener('click', handler, true)
+                gameRef.current!.removeEventListener('click', handler, true)
                 setModal({ ...modal, modalIsOpen: false })
             }, 4000)
         }
@@ -222,11 +233,12 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
 
         if (counter.question === 3) {
             if (!gameState.isFinalRound) {
-                const region = document.querySelector(`[data-id="${currentRegion}"]`) as HTMLElement
+                const region = document.querySelector(`[data-id="${regions.current}"]`) as HTMLElement
                 if (counter.rightAnswers >= 2) {
-                    
+                    setCounter(prev => ({ ...prev, region: prev.region + 1 }))
+                    region.style.fill = 'red'
                 } else {
-                    
+                    region.style.fill = 'green'
                 } 
             } else {
                 counter.rightAnswers >= 2 
@@ -247,16 +259,21 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
         setGameQuestion({ ...gameQuestion, opponentAnswer })
     }
 
-    const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
+    const changeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setGameQuestion({ ...gameQuestion, answer: +e.target.value })
     }
 
     const mapClickHandler = (e: React.MouseEvent<SVGPolygonElement>) => {
-        // if ()
+        const region: number = +(e.currentTarget.dataset.id ?? 0)
+        if (regions.playing.includes(region)) {
+            const index = regions.playing.indexOf(region)
+            regions.playing.splice(index, 1)
+            setRegions({ playing: regions.playing, current: region })
+        }
     }
 
     return (
-        <div id="game">
+        <div ref={gameRef} id="game">
             <BelarusMap click={mapClickHandler} />
             
             <Modal 
