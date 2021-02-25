@@ -6,13 +6,8 @@ import audioSrc from './icons/audio.svg'
 import audioMutedSrc from './icons/audio_muted.svg'
 import musicSrc from './icons/music.svg'
 import musicMutedSrc from './icons/music_muted.svg'
+import { ControlPanelProps } from '../../interfaces/components.interface'
 import './ControlPanel.css'
-
-interface ControlPanelProps {
-    clickHandler(stateCase: string): void,
-    isAudioMuted: boolean,
-    isMusicMuted: boolean
-}
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudioMuted, isMusicMuted }) => {
     const [isMenu, setIsMenu] = useState<boolean>(false)

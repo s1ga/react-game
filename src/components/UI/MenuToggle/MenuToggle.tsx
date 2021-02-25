@@ -1,10 +1,6 @@
 import React from 'react'
+import { MenuToggleProps } from '../../../interfaces/components.interface'
 import './MenuToggle.css'
-
-interface MenuToggleProps {
-    onToggle(): void
-    isOpen: boolean
-}
 
 export const MenuToggle: React.FC<MenuToggleProps> = ({ onToggle, isOpen }) => {
     const classes: String[] = ['MenuToggle', 'fa']

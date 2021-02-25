@@ -1,13 +1,5 @@
 import { createContext } from 'react'
-
-interface IAuthContext {
-    token: string | null
-    userId: string,
-    username: string
-    isAuth: boolean,
-    login(userToken: string, userId: string, username: string): void,
-    logout(): void   
-}
+import { IAuthContext } from '../interfaces/context.interface'
 
 const noop = (): void => {}
 

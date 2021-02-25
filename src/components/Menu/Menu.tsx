@@ -1,14 +1,8 @@
 import React from 'react'
 import { NavLink, useHistory } from 'react-router-dom'
 import { Backdrop } from '../UI/Backdrop/Backdrop'
+import { MenuProps } from '../../interfaces/components.interface'
 import './Menu.css'
-
-interface MenuProps {
-    isOpen: boolean
-    user: string
-    onClose(): void
-    logout(): void
-}
 
 export const Menu: React.FC<MenuProps> = ({ isOpen, user, onClose, logout }) => {
     const history = useHistory()

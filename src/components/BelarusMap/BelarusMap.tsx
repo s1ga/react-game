@@ -1,9 +1,6 @@
 import React from 'react'
+import { BelarusMapProps } from '../../interfaces/components.interface'
 import './BelarusMap.css'
-
-interface BelarusMapProps {
-    click(e: React.MouseEvent): void
-}
 
 export const BelarusMap: React.FC<BelarusMapProps> = ({ click }) => {
     return (
