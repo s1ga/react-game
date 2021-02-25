@@ -3,17 +3,11 @@ import { useHistory } from 'react-router-dom'
 import { Loader } from '../../components/UI/Loader/Loader'
 import { AuthContext } from '../../context/AuthContext'
 import { useFetch } from '../../hooks/fetch.hook'
+import { IStatistics } from '../../interfaces/pages.interface'
 import './StatisticsPage.css'
 
-interface Statistics {
-    _id: string
-    points: number
-    date: Date
-    user: string
-}
-
 export const StatisticsPage: React.FC = () => {
-    const [statistics, setStatistics] = useState<Array<Statistics>>([])
+    const [statistics, setStatistics] = useState<Array<IStatistics>>([])
     const { userId, token, username, logout } = useContext(AuthContext)
     const history = useHistory()
     const { fetchData, loading } = useFetch()
@@ -39,7 +33,7 @@ export const StatisticsPage: React.FC = () => {
                         ? <Loader />
                         : <ul>
                             { statistics.length
-                                ? statistics.map((item: Statistics) => {
+                                ? statistics.map((item: IStatistics) => {
                                         const date = new Date(item.date)
                                         return <li key={item._id}>
                                                 { date.toLocaleDateString() } { date.toLocaleTimeString() } - { item.points } очков

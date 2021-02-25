@@ -4,14 +4,8 @@ import { Link, useHistory } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import musicSrc from './audio/start-music.mp3'
 import audioSrc from './audio/click.mp3'
+import { StartPageProps } from '../../interfaces/pages.interface'
 import './StartPage.css'
-
-
-interface StartPageProps {
-    isAudioMuted: boolean
-    isMusicMuted: boolean
-    setMode(option: string): void 
-}
 
 export const StartPage: React.FC<StartPageProps> = ({ isAudioMuted, isMusicMuted, setMode }) => {
     const [isChecked, setIsChecked] = useState<boolean>(false)

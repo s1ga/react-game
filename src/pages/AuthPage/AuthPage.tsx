@@ -5,13 +5,8 @@ import { Tabs, Tab, TabList, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 import { AuthContext } from '../../context/AuthContext'
 import { useFetch } from '../../hooks/fetch.hook'
+import { IForm } from '../../interfaces/pages.interface'
 import './AuthPage.css'
-
-interface IForm {
-    email: string,
-    name?: string,
-    password: string
-}
 
 export const AuthPage: React.FC = () => {
     const [form, setForm] = useState<IForm>({

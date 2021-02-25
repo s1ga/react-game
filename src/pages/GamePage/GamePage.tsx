@@ -5,53 +5,11 @@ import { Link, useHistory } from 'react-router-dom'
 import { BelarusMap } from '../../components/BelarusMap/BelarusMap'
 import { AuthContext } from '../../context/AuthContext'
 import { useFetch } from '../../hooks/fetch.hook'
+import { 
+    GamePageProps, IModalState, IGameQuestion, 
+    ICounter, IGameState, IRegions
+} from '../../interfaces/pages.interface'
 import './GamePage.css'
-
-interface GamePageProps {
-    option: string
-}
-
-interface IModalState {
-    modalIsOpen: boolean
-    questionIsOpen: boolean
-    answerIsOpen: boolean
-    finalIsOpen: boolean
-    modalText: string
-}
-
-interface IRegionQuestions {
-    __id: string
-    question: string
-    answer: string
-}
-
-interface IGameQuestion {
-    question: string
-    correctAnswer: number
-    opponentAnswer: number
-    answer: string
-    regionQuestions: Array<IRegionQuestions>
-    isLoaded: boolean
-}
-
-interface ICounter {
-    question: number
-    rightAnswers: number
-    region: number
-    round: number
-}
-
-interface IGameState {
-    isStart: boolean
-    isFinal: boolean
-    isFinalRound: boolean
-    isWinner: boolean
-}
-
-interface IRegions {
-    current: number | null
-    playing: Number[]
-}
 
 Modal.setAppElement('#root')
 
@@ -309,7 +267,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 contentLabel="Question Modal"
             >
                 <h2>{ gameQuestion.question }</h2>
-                <input type="text" value={gameQuestion.answer} onChange={changeHandler} />
+                <input type="text" value={gameQuestion.answer} onChange={changeHandler} placeholder="Ваш ответ" />
                 <button onClick={questionClickHandler}>Ответить</button>
             </Modal>
 
