@@ -5,6 +5,8 @@ import { Link, useHistory } from 'react-router-dom'
 import { BelarusMap } from '../../components/BelarusMap/BelarusMap'
 import { AuthContext } from '../../context/AuthContext'
 import { useFetch } from '../../hooks/fetch.hook'
+import clickSrc from './audio/map_click.mp3'
+import questionSrc from './audio/question_click.mp3'
 import { 
     GamePageProps, IModalState, IGameQuestion, 
     ICounter, IGameState, IRegions
@@ -40,8 +42,7 @@ const handler = (e: MouseEvent) => {
     e.preventDefault()
 }   
 
-export const GamePage: React.FC<GamePageProps> = ({ option }) => {
-    // const [isLoading, setIsLoading] = useState(true)
+export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted, isMusicMuted }) => {
     const [gameState, setGameState] = useState<IGameState>({
         isStart: true, isFinal: false, isFinalRound: false, isWinner: false
     })
@@ -60,6 +61,8 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     const [regions, setRegions] = useState<IRegions>({
         current: null, playing: [1, 2, 3, 4, 5, 6]
     })
+    const clickRef = useRef<HTMLAudioElement>(null)
+    const questionRef = useRef<HTMLAudioElement>(null)
     const gameRef = useRef<HTMLDivElement | null>(null)
     const history = useHistory()
     const { token, logout, userId } = useContext(AuthContext)
@@ -93,6 +96,16 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
             window.clearTimeout(close)
         }
     }, [])
+
+    useEffect(() => {
+        if (isAudioMuted) {
+            clickRef.current!.muted = true
+            questionRef.current!.muted = true
+        } else {
+            clickRef.current!.muted = false
+            questionRef.current!.muted = false
+        }
+    }, [isAudioMuted, isMusicMuted])
 
     useEffect(() => {
         if (gameState.isFinalRound) {
@@ -170,14 +183,12 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
                 ? setGameState({ ...gameState, isWinner: true, isFinal: true })
                 : setGameState({ ...gameState, isWinner: false, isFinal: true })
         } else {
-            // document.addEventListener('click', handler, true)
             gameRef.current!.addEventListener('click', handler, true)
             open = window.setTimeout(() => {
                 setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
+                gameRef.current!.removeEventListener('click', handler, true)
             }, 1500)
             close = window.setTimeout(() => {
-                // document.removeEventListener('click', handler, true)
-                gameRef.current!.removeEventListener('click', handler, true)
                 setModal({ ...modal, modalIsOpen: false })
             }, 4000)
         }
@@ -231,6 +242,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }
 
     const questionClickHandler = (): void => {
+        questionRef.current!.play()
         const opponentAnswer = getOpponentAnswer(gameQuestion.correctAnswer)
         setModal({ ...modal, questionIsOpen: false })
         setGameQuestion({ ...gameQuestion, opponentAnswer })
@@ -241,6 +253,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
     }
 
     const mapClickHandler = (e: React.MouseEvent<SVGPolygonElement>) => {
+        clickRef.current!.play()
         const region: number = +(e.currentTarget.dataset.id ?? 0)
         if (regions.playing.includes(region)) {
             const index = regions.playing.indexOf(region)
@@ -251,6 +264,8 @@ export const GamePage: React.FC<GamePageProps> = ({ option }) => {
 
     return (
         <div ref={gameRef} id="game">
+            <audio ref={clickRef} src={clickSrc} />
+            <audio ref={questionRef} src={questionSrc} />
             <BelarusMap click={mapClickHandler} />
             
             <Modal 

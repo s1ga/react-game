@@ -1,5 +1,7 @@
 interface GamePageProps {
-    option: string
+    option: string,
+    isAudioMuted: boolean 
+    isMusicMuted: boolean
 }
 
 interface IModalState {

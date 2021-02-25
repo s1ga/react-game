@@ -55,7 +55,8 @@ function App() {
                   <Route path="/game">
                     <GamePage 
                       option={option}
-                      
+                      isAudioMuted={isAudioMuted} 
+                      isMusicMuted={isMusicMuted}
                     />
                   </Route>
                   <Redirect to="/home" />

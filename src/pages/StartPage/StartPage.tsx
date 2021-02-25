@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import Switch  from 'react-switch'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { useFetch } from '../../hooks/fetch.hook'
-import musicSrc from './audio/start-music.mp3'
-import audioSrc from './audio/click.mp3'
+import clickSrc from './audio/click.mp3'
+import buttonSrc from './audio/button_click.mp3'
 import { StartPageProps } from '../../interfaces/pages.interface'
 import './StartPage.css'
 
 export const StartPage: React.FC<StartPageProps> = ({ isAudioMuted, isMusicMuted, setMode }) => {
     const [isChecked, setIsChecked] = useState<boolean>(false)
-    const musicRef = useRef<HTMLAudioElement>(null)
-    const audioRef = useRef<HTMLAudioElement>(null)
+    const clickRef = useRef<HTMLAudioElement>(null)
+    const buttonRef = useRef<HTMLAudioElement>(null)
     const history = useHistory()
     const { fetchData } = useFetch()
     const { token, logout } = useContext(AuthContext)
+    let click: number
 
     useEffect(() => {
         (async function fetching() {
@@ -25,32 +26,46 @@ export const StartPage: React.FC<StartPageProps> = ({ isAudioMuted, isMusicMuted
                 history.push('/')
             }
         }) ()
+
+        return () => {
+            window.clearTimeout(click)
+        }
     }, [])
 
-    useEffect(() => {
-        const music = musicRef.current!
-        music.volume = 0.2
-        isMusicMuted ? music.pause() : music.play()
-    }, [isMusicMuted])
+    // useEffect(() => {
+    //     const music = musicRef.current!
+    //     music.volume = 0.2
+    //     isMusicMuted ? music.pause() : music.play()
+    // }, [isMusicMuted])
 
     useEffect(() => {
-        isAudioMuted ? audioRef.current!.muted = true : audioRef.current!.muted = false
+        if (isAudioMuted) {
+            clickRef.current!.muted = true
+            buttonRef.current!.muted = true
+        } else {
+            clickRef.current!.muted = false
+            buttonRef.current!.muted = false
+        }
     }, [isAudioMuted])
 
     const clickHandler = (): void => {
+        buttonRef.current!.play()
         const optionMode = isChecked ? 'hard' : 'easy'
         setMode(optionMode)
+        click = window.setTimeout(() => {
+            history.push('/game')
+        }, 500)
     }
 
     const handleChange = (flag: boolean): void => {
-        audioRef.current!.play()
+        clickRef.current!.play()
         setIsChecked(flag)
     }
 
     return (
         <div className="start__page">
-            <audio ref={musicRef} src={musicSrc} loop />
-            <audio ref={audioRef} src={audioSrc} />
+            <audio ref={clickRef} src={clickSrc} />
+            <audio ref={buttonRef} src={buttonSrc} />
             <div className="start__page__switch__wrapper">
                 <span>Легкий</span>
                 <Switch 
@@ -64,7 +79,7 @@ export const StartPage: React.FC<StartPageProps> = ({ isAudioMuted, isMusicMuted
                 />
                 <span>Тяжелый</span>
             </div>
-            <Link className="start__page__btn" to="/game" onClick={clickHandler}>Начать игру</Link>
+            <a className="start__page__btn" onClick={clickHandler}>Начать игру</a>
         </div>
     )
 }
