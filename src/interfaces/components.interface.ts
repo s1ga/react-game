@@ -3,9 +3,8 @@ interface BelarusMapProps {
 }
 
 interface ControlPanelProps {
-    clickHandler: (stateCase: string) => void,
-    isAudioMuted: boolean,
-    isMusicMuted: boolean
+    clickHandler: (stateCase: string) => void
+    isAudioMuted: boolean
 }
 
 interface MenuProps {

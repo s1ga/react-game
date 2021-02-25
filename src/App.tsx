@@ -12,13 +12,14 @@ import './App.css'
 
 function App() {
   const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false)
-  const [isMusicMuted, setIsMusicMuted] = useState<boolean>(true)
   const [option, setOption] = useState<string>('easy')
   const { token, userId, username, login, logout, ready } = useAuth()
   const isAuth: boolean = !!token
 
   const clickHandler = (stateCase: string): void => {
-    stateCase === 'audio' ?  setIsAudioMuted(!isAudioMuted) : setIsMusicMuted(!isMusicMuted) 
+    if (stateCase === 'music') {
+      setIsAudioMuted(!isAudioMuted)
+    }
   }
 
   const modeHandler = (mode: string): void => {
@@ -34,7 +35,6 @@ function App() {
           <ControlPanel 
             clickHandler={clickHandler}
             isAudioMuted={isAudioMuted}
-            isMusicMuted={isMusicMuted}
           />
         
           {
@@ -44,7 +44,6 @@ function App() {
                     <StartPage
                       setMode={modeHandler} 
                       isAudioMuted={isAudioMuted} 
-                      isMusicMuted={isMusicMuted}
                     />
                   </Route>
 
@@ -56,7 +55,6 @@ function App() {
                     <GamePage 
                       option={option}
                       isAudioMuted={isAudioMuted} 
-                      isMusicMuted={isMusicMuted}
                     />
                   </Route>
                   <Redirect to="/home" />

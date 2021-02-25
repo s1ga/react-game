@@ -1,28 +1,50 @@
 import React, { useState, useContext, useRef, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { MenuToggle } from '../UI/MenuToggle/MenuToggle'
 import { Menu } from '../Menu/Menu'
 import { AuthContext } from '../../context/AuthContext'
 import audioSrc from './icons/audio.svg'
 import audioMutedSrc from './icons/audio_muted.svg'
 import musicSrc from './icons/music.svg'
-import music from '../../pages/StartPage/audio/start-music.mp3'
+import gameSrc from './audio/game_music.mp3'
+import startSrc from './audio/start_music.mp3'
 import musicMutedSrc from './icons/music_muted.svg'
 import { ControlPanelProps } from '../../interfaces/components.interface'
 import './ControlPanel.css'
 
-export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudioMuted, isMusicMuted }) => {
+export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudioMuted }) => {
     const [isMenu, setIsMenu] = useState<boolean>(false)
+    const [isMusicMuted, setIsMusicState] = useState<boolean>(true)
+    const location = useLocation()
     const { isAuth, userId, logout } = useContext(AuthContext)
     const musicRef = useRef<HTMLAudioElement>(null)
 
     useEffect(() => {
+        const path = location.pathname.split('/')[1]
+        switch(path) {
+            case 'home':
+            case 'statistics':
+                musicRef.current!.src = startSrc
+                isMusicMuted ? musicRef.current!.pause() : musicRef.current!.play()
+                break
+            case 'game':
+                musicRef.current!.src = gameSrc
+                isMusicMuted ? musicRef.current!.pause() : musicRef.current!.play()
+                break
+            default:
+                musicRef.current!.src = ''
+                break
+        }
+    }, [location.pathname])
+
+    useEffect(() => {
         const music = musicRef.current!
-        music.volume = 0.2
+        music.volume = 0.5
         isMusicMuted ? music.pause() : music.play()
     }, [isMusicMuted])
 
     const audioClickHandler = (): void => {
-        clickHandler('audio')
+        setIsMusicState(prevState => !prevState)
     }
     
     const musicClickHandler = (): void => {
@@ -39,7 +61,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudi
 
     return (
         <header className="header">
-            <audio ref={musicRef} src={music} loop />
+            <audio ref={musicRef} src={startSrc} loop />
             <ul className="header__list">
                 {
                     isAuth 

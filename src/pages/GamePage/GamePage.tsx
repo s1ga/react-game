@@ -54,10 +54,8 @@ export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted }) => {
                 if (gameState.isStart) {
                     open = window.setTimeout(() => {
                         setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
-                        // modalOpen()
                     }, 100)
                     close = window.setTimeout(() => {
-                        // closeModal()
                         setModal({ ...modal, modalIsOpen: false })
                     }, 3000)
                 }

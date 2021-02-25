@@ -1,7 +1,6 @@
 interface GamePageProps {
     option: string,
     isAudioMuted: boolean 
-    isMusicMuted: boolean
 }
 
 interface IModalState {
@@ -54,7 +53,6 @@ interface IForm {
 
 interface StartPageProps {
     isAudioMuted: boolean
-    isMusicMuted: boolean
     setMode: (option: string) => void 
 }
 

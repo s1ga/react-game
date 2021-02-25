@@ -8,7 +8,7 @@ import buttonSrc from './audio/button_click.mp3'
 import { StartPageProps } from '../../interfaces/pages.interface'
 import './StartPage.css'
 
-export const StartPage: React.FC<StartPageProps> = ({ isAudioMuted, isMusicMuted, setMode }) => {
+export const StartPage: React.FC<StartPageProps> = ({ isAudioMuted, setMode }) => {
     const [isChecked, setIsChecked] = useState<boolean>(false)
     const clickRef = useRef<HTMLAudioElement>(null)
     const buttonRef = useRef<HTMLAudioElement>(null)
