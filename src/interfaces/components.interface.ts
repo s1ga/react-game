@@ -1,5 +1,5 @@
 interface BelarusMapProps {
-    click: (e: React.MouseEvent) => void
+    click: (e: React.MouseEvent<SVGPolygonElement>) => void
 }
 
 interface ControlPanelProps {
