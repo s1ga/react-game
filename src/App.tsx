@@ -17,7 +17,7 @@ function App() {
   const isAuth: boolean = !!token
 
   const clickHandler = (stateCase: string): void => {
-    if (stateCase === 'music') {
+    if (stateCase === 'audio') {
       setIsAudioMuted(!isAudioMuted)
     }
   }

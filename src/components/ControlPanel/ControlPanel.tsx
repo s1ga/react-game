@@ -15,15 +15,31 @@ import './ControlPanel.css'
 export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudioMuted }) => {
     const [isMenu, setIsMenu] = useState<boolean>(false)
     const [isMusicMuted, setIsMusicState] = useState<boolean>(true)
+    const [path, setPath] = useState<string>('/home')
     const location = useLocation()
     const { isAuth, userId, logout } = useContext(AuthContext)
     const musicRef = useRef<HTMLAudioElement>(null)
 
     useEffect(() => {
         const path = location.pathname.split('/')[1]
-        switch(path) {
+        setPath(prev => {
+            if (location.pathname === '/') {
+                return '/'
+            } else if (path === 'game') {
+                return 'game'
+            } else if (prev !== 'home') {
+                return 'home'
+            }
+            return prev
+        })
+    }, [location.pathname])
+
+    useEffect(() => {
+        switch (path) {
+            case '/':
+                musicRef.current!.src = ''
+                break
             case 'home':
-            case 'statistics':
                 musicRef.current!.src = startSrc
                 isMusicMuted ? musicRef.current!.pause() : musicRef.current!.play()
                 break
@@ -35,7 +51,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudi
                 musicRef.current!.src = ''
                 break
         }
-    }, [location.pathname])
+    }, [path])
 
     useEffect(() => {
         const music = musicRef.current!
@@ -43,12 +59,12 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ clickHandler, isAudi
         isMusicMuted ? music.pause() : music.play()
     }, [isMusicMuted])
 
-    const audioClickHandler = (): void => {
+    const musicClickHandler = (): void => {
         setIsMusicState(prevState => !prevState)
     }
     
-    const musicClickHandler = (): void => {
-        clickHandler('music')
+    const audioClickHandler = (): void => {
+        clickHandler('audio')
     }
 
     const toggleMenuHandler = (): void => {
