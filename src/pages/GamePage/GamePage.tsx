@@ -1,4 +1,3 @@
-import { countReset } from 'node:console'
 import React, { useState, useEffect, useContext, useRef, ObjectHTMLAttributes } from 'react'
 import Modal from 'react-modal'
 import { Link, useHistory } from 'react-router-dom'
@@ -8,6 +7,10 @@ import { useFetch } from '../../hooks/fetch.hook'
 import clickSrc from './audio/map_click.mp3'
 import questionSrc from './audio/question_click.mp3'
 import { 
+    randomNumFromRange, getOpponentAnswer, 
+    isRightAnswer, handler 
+} from '../../utils'
+import { 
     GamePageProps, IModalState, IGameQuestion, 
     ICounter, IGameState, IRegions
 } from '../../interfaces/pages.interface'
@@ -15,34 +18,7 @@ import './GamePage.css'
 
 Modal.setAppElement('#root')
 
-const randomNumFromRange = (length: number): number => Math.floor(Math.random() * length)
-
-const getOpponentAnswer = (correctAnswer: number): number => {
-    let shift: number = 10
-    if (correctAnswer > 10000) {
-        shift = 1000
-    } else if (correctAnswer > 100000) {
-        shift = 5000
-    }
-
-    const max = Math.ceil(correctAnswer + shift)
-    const min = Math.floor(correctAnswer - shift)
-    return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-const isRightAnswer = (answer: number, opponentAnswer: number, correctAnswer: number): boolean => {
-    const answerVariation = Math.abs(correctAnswer - answer)
-    const opponentAnswerVariation = Math.abs(correctAnswer - opponentAnswer)
-
-    return answerVariation < opponentAnswerVariation ? true : false
-}
-
-const handler = (e: MouseEvent) => {
-    e.stopPropagation()
-    e.preventDefault()
-}   
-
-export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted, isMusicMuted }) => {
+export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted }) => {
     const [gameState, setGameState] = useState<IGameState>({
         isStart: true, isFinal: false, isFinalRound: false, isWinner: false
     })
@@ -105,7 +81,7 @@ export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted, isMusi
             clickRef.current!.muted = false
             questionRef.current!.muted = false
         }
-    }, [isAudioMuted, isMusicMuted])
+    }, [isAudioMuted])
 
     useEffect(() => {
         if (gameState.isFinalRound) {
