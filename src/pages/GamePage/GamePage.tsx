@@ -96,7 +96,10 @@ export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted }) => {
 
     useEffect(() => {
         if (gameState.isFinal) {
-            fetchData(`/api/statistics/${userId}`, { 'Authorization': token }, 'POST', { points: points * counter.region })
+            fetchData(`/api/statistics/${userId}`, { 'Authorization': token }, 'POST', {
+                points: points * counter.region,
+                winner: gameState.isWinner
+            })
             open = window.setTimeout(() => {
                 setModal({ ...modal, finalIsOpen: true })
             }, 1500)

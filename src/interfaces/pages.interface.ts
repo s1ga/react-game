@@ -59,7 +59,8 @@ interface StartPageProps {
 interface IStatistics {
     _id: string
     points: number
-    date: Date
+    date: Date,
+    winner: boolean
     user: string
 }
 

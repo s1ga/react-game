@@ -37,6 +37,7 @@ export const StatisticsPage: React.FC = () => {
                                         const date = new Date(item.date)
                                         return <li key={item._id}>
                                                 { date.toLocaleDateString() } { date.toLocaleTimeString() } - { item.points } очков
+                                                - { item.winner ? 'победа' : 'выигрыш' }
                                             </li> 
                                     }) 
                                 : <p>Информации пока нет</p>
