@@ -164,10 +164,10 @@ export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted }) => {
             open = window.setTimeout(() => {
                 setModal({ ...modal, modalText: 'Выберите область', modalIsOpen: true })
                 gameRef.current!.removeEventListener('click', handler, true)
-            }, 1500)
+            }, 2500)
             close = window.setTimeout(() => {
                 setModal({ ...modal, modalIsOpen: false })
-            }, 4000)
+            }, 5000)
         }
     }, [counter.round])
 
@@ -200,9 +200,12 @@ export const GamePage: React.FC<GamePageProps> = ({ option, isAudioMuted }) => {
                 const region = document.querySelector(`[data-id="${regions.current}"]`) as HTMLElement
                 if (counter.rightAnswers >= 2) {
                     setCounter(prev => ({ ...prev, region: prev.region + 1 }))
-                    region.style.fill = 'red'
+                    region.classList.add('red')
+                    open = window.setTimeout(() => {region.style.fill = 'red'}, 2000)
                 } else {
-                    region.style.fill = 'green'
+                    region.classList.add('green')
+                    open = window.setTimeout(() => {region.style.fill = 'green'}, 2000)
+                    
                 } 
             } else {
                 counter.rightAnswers >= 2 

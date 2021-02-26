@@ -18,7 +18,24 @@ svg {
 }
 
 polygon {
-    transition: all .4s ease-in;
+    transition: all .3s ease-in;
+}
+
+.red {
+    animation: red-fill 2s ease-in;
+}
+.green {
+    animation: green-fill 2s ease-in;
+}
+@keyframes green-fill {
+    to {
+        fill: green;
+    }
+}
+@keyframes red-fill {
+    to {
+        fill: red;
+    }
 }
 
 #regions {
